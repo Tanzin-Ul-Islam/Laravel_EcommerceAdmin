@@ -40,8 +40,26 @@ class CategoryController extends Controller
             'category_name'=>'required'
         ]);
 
+        $existnames = Category::select('name')->get();
         $Category=new category();
-        $Category->name = $request->input('category_name');
+        //return $existnames;
+
+        ////name verification
+        $status = false;
+        foreach($existnames as $existname){
+            if($request->category_name == $existname->name){
+                $status = true;
+                break;
+            }
+        }
+        if($status==true){
+            return redirect()->back()->with('error','name already exists!!');
+        }
+        else{
+            $Category->name = $request->input('category_name');
+        }
+
+
         $Category->description = $request->input('description');
         $Category->slug = Str::slug($request->category_name,'-');
         $Category->save();
@@ -86,11 +104,34 @@ class CategoryController extends Controller
             'category_name'=>'required'
         ]);
         $category = Category::where('slug',$slug)->first();
-        $category->name = $request->input('category_name');
+        
+        $existnames = Category::select('name')->get();
+        foreach($existnames as $existname=>$val){
+            if($category->name==$val->name){
+                unset($existnames[$existname]);
+            }
+        }
+        //return $existnames;
+
+        $status = false;
+        foreach($existnames as $existname){
+            if($request->category_name == $existname->name){
+                $status = true;
+                break;
+            }
+        }
+        if($status==true){
+            return redirect()->back()->with('error','name already exists!!');
+        }
+        else{
+            $category->name = $request->input('category_name');
+        }
+
+
         $category->description = $request->input('description');
         $category->slug = Str::slug($request->category_name,'-');
         $category->save();
-        return redirect('/admin/category');
+        return redirect('/admin/category')->with('success', 'Category updated successfully.');
     }
 
     /**
@@ -103,6 +144,6 @@ class CategoryController extends Controller
     {
         $category = Category::where('slug', $slug)->first();
         $category->delete();
-        return redirect('/admin/category');
+        return redirect('/admin/category')->with('success', 'Category deleted successfully.');
     }
 }

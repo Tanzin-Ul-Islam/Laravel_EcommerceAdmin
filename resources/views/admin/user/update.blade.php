@@ -17,7 +17,7 @@
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
-
+@include('inc.messages')
 <div class="content">
     <div class="container-fluid">
       <div class="row">
@@ -29,12 +29,10 @@
                 <div class="box-header">
                     <h5 class="box-title">Update User</h5>
                 </div>
-                @include('inc.messages')
                 <form action="{{route('user.update', [$user->id])}}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="box-body">
-                  @include('inc.messages')
 
                     <div class="form-group">
                     <label>User Name</label>
@@ -57,21 +55,30 @@
                     </div>
 
                     <div class="form-group">
-                      <label>User Type</label>
+                      <label>Is Admin</label>
                       <div class="form-check">
-                        <input class="form-check-input" type="radio" name="user_type" value="admin" @if($user->user_type == 'admin') checked @endif>
-                        <label class="form-check-label">Admin</label>
+                        <input class="form-check-input" type="radio" name="is_admin" value="1" @if($user->is_admin == 1) checked @endif>
+                        <label class="form-check-label">True</label>
                       </div>
                       <div class="form-check">
-                        <input class="form-check-input" type="radio" name="user_type" value="user" @if($user->user_type == 'user') checked @endif>
-                        <label class="form-check-label">User</label>
+                        <input class="form-check-input" type="radio" name="is_admin" value="0" @if($user->is_admin == 0) checked @endif>
+                        <label class="form-check-label">False</label>
                       </div>
                     </div>
 
 
-                    <div class="form-group">
-                      <label>select Image</label> 
-                      <input type="file" value="{{$user->image}}" name="cover_pic" class="form-control" vlaue="">
+                    <div class="form-group row"> 
+                      <div class="col-sm-8">
+                        <label>select Image</label> 
+                        <input type="file" name="cover_pic" class="form-control">
+                      </div>
+                      <div class="col-sm-4">
+                        @if($user->image=='noimage')
+                        <img src="/product_images/noimage.jpg" width="120px" height="80px"><br>
+                        @else
+                        <img src="/profile_image/{{$user->image}}" width="120px" height="80px"><br>
+                        @endif
+                      </div>
                     </div>
                     
 

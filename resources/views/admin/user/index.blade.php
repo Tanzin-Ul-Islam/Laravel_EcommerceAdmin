@@ -16,7 +16,7 @@
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
-
+@include('inc.messages')
 <div class="content">
     <div class="container-fluid">
       <div class="row">
@@ -33,6 +33,7 @@
                     <th>Name</th>
                     <th>Image</th>
                     <th>Email</th>
+                    <th>Is Admin</th>
                     <th>Created At</th>
                     <th>Action</th>
                   </tr>
@@ -44,23 +45,23 @@
                     <strong>{{$user->name}}</strong></a></td>
                     <td>
                       @if($user->image == 'noimage')
-                      <img src="/storage/user_image/noimage.jpg" width="120px" height="80px"><br> 
+                      <img src="/product_images/noimage.jpg" width="120px" height="80px"><br> 
                       @else
-                      <img src="/storage/user_image/{{$user->image}}" width="120px" height="80px"><br>
+                      <img src="/profile_image/{{$user->image}}" width="120px" height="80px"><br>
                       @endif
                     </td>              
                     <td>{{$user->email}}</td>
+                    <td>@if($user->is_admin==1)Admin @else False @endif</td>
                     <td>{{$user->created_at}}</td>
 
                   <td class="d-flex">
                     
-                    <a href="{{route('user.edit', [$user->id])}}" class="btn btn-sm btn-success mr-1">
-                    <i class="fas fa-edit"></i></a>
+                    <a href="{{route('user.edit', [$user->id])}}" class="btn btn-sm btn-success mr-1">Edit</a>
 
                     <form action="{{route('user.destroy', [$user->id])}}" method="POST" class="mr-1">
                      @method('DELETE')
                      @csrf
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')"> <i class="fas fa-trash"></i></button>
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
                     </form>
 
                   </td>

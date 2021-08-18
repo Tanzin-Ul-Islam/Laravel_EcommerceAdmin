@@ -34,7 +34,7 @@
               </tr>
               
               <tr>
-                <th>Publish Date</th>
+                <th>Created Date</th>
                 <td>{{$product->created_at}}</td>
               </tr>
 
@@ -52,6 +52,11 @@
                   <img src="/product_images/{{$product->image}}" width="600px" height="400px"><br>
                   @endif
                 </td>
+              </tr>
+
+              <tr>
+                <th>Price</th>
+                <td>{{$product->price}}</td>
               </tr>
               
               <tr>

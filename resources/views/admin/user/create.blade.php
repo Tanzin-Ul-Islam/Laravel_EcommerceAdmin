@@ -17,7 +17,7 @@
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
-
+@include('inc.messages')
 <div class="content">
     <div class="container-fluid">
       <div class="row">
@@ -53,14 +53,14 @@
                     </div>
 
                     <div class="form-group">
-                      <label>User Type</label>
+                      <label>Is Admin</label>
                       <div class="form-check">
-                        <input class="form-check-input" type="radio" name="user_type" value="true">
-                        <label class="form-check-label">Admin</label>
+                        <input class="form-check-input" type="radio" name="is_admin" value="1">
+                        <label class="form-check-label">True</label>
                       </div>
                       <div class="form-check">
-                        <input class="form-check-input" type="radio" name="user_type" value="false">
-                        <label class="form-check-label">User</label>
+                        <input class="form-check-input" type="radio" name="is_admin" value="0">
+                        <label class="form-check-label">False</label>
                       </div>
                     </div>
 

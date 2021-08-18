@@ -16,7 +16,7 @@
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
-
+@include('inc.messages')
 <div class="card card-primary card-outline">
     <div class="card-body">
       <div class="box">
@@ -32,9 +32,9 @@
                 <th>Image</th>
                 <td>
                   @if($user->image == 'noimage')
-                  <img src="/storage/user_image/noimage.jpg" width="250px" height="200px"><br> 
+                  <img src="/product_images/noimage.jpg" width="250px" height="200px"><br> 
                   @else
-                  <img src="/storage/user_image/{{$user->image}}" width="250px" height="200px"><br>
+                  <img src="/profile_image/{{$user->image}}" width="250px" height="200px"><br>
                   @endif
                 </td>
               </tr>
@@ -50,8 +50,8 @@
               </tr>
 
               <tr>
-                <th>User Type</th>
-                <td>{{$user->user_type}}</td>
+                <th>Is Admin</th>
+                <td>@if($user->is_admin == 1)True @else False @endif</td>
               </tr>
 
               <tr>

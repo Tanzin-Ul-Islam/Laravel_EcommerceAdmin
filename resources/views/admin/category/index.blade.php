@@ -16,7 +16,7 @@
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
-
+@include('inc.messages')
 <div class="content">
     <div class="container-fluid">
       <div class="row">

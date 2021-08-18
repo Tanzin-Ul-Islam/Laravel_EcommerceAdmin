@@ -51,9 +51,25 @@ class ProductController extends Controller
             'description'=>'required'
         ]);
 
-
+        $existnames = Product::select('name')->get();
         $product=new Product();
-        $product->name=$request->input('product_name');
+        //return $existnames;
+
+        //name verification
+        $status = false;
+        foreach($existnames as $existname){
+            if($request->product_name == $existname->name){
+                $status = true;
+                break;
+            }
+        }
+        if($status==true){
+            return redirect()->back()->with('error','name already exists!!');
+        }
+        else{
+            $product->name=$request->input('product_name');
+        }
+
         $product->slug=Str::slug($request->product_name,'-');
         $product->category_id=$request->input('product_category');
         $product->price=$request->input('price');
@@ -77,7 +93,7 @@ class ProductController extends Controller
         }
         $product->image=$filename;
         $product->save();
-        return redirect('/admin/product');
+        return redirect('/admin/product')->with('success', 'Category created successfully.');
     }
 
     /**
@@ -127,7 +143,29 @@ class ProductController extends Controller
 
         $product=Product::where('slug',$slug)->first();
 
-        $product->name=$request->input('product_name');
+        //name verification
+        $existnames = Product::select('name')->get();
+    
+        foreach($existnames as $existname=>$val){
+            if($product->name==$val->name){
+                unset($existnames[$existname]);
+            }
+        }
+
+        $status = false;
+        foreach($existnames as $existname){
+            if($request->product_name == $existname->name){
+                $status = true;
+                break;
+            }
+        }
+        if($status==true){
+            return redirect()->back()->with('error','name already exists!!');
+        }
+        else{
+            $product->name=$request->input('product_name');
+        }
+
         $product->slug=Str::slug($request->product_name,'-');
         $product->category_id=$request->input('product_category');
         $product->price=$request->input('price');
@@ -151,7 +189,7 @@ class ProductController extends Controller
         }
         $product->image=$filename;
         $product->save();
-        return redirect('/admin/product');
+        return redirect('/admin/product')->with('success', 'Product updated successfully.');
     }
 
     /**
@@ -164,6 +202,6 @@ class ProductController extends Controller
     {
         $product=Product::where('slug',$slug)->first();
         $product->delete();
-        return redirect('/admin/product');
+        return redirect('/admin/product')->with('success', 'Product deleted successfully.');
     }
 }

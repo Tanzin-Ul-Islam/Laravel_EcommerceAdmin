@@ -48,13 +48,31 @@ class UserController extends Controller
             'description'=> 'nullable'
         ]);
 
+
         // print_r($request->input('user_type'));
         // exit(); 
+        $existemails = User::select('email')->get();
+        //return $existemails;
 
         $user = new User();
         $user->name = $request->input('user_name');
-        $user->email = $request->input('user_email');
-        
+
+        ////email verification
+        $status = false;
+        foreach($existemails as $existemail){
+            if($request->user_email == $existemail->email){
+                $status = true;
+                break;
+            }
+        }
+        if($status==true){
+            return redirect()->back()->with('error','Email already exists!!');
+        }
+        else{
+            $user->email = $request->input('user_email');
+        }
+
+        //password
         if($request->has('user_pass') && $request->input('user_pass') != null){
             if($request->input('user_pass') == $request->input('confirm_pass')){
                 $user->password = bcrypt($request->input('user_pass'));
@@ -64,35 +82,32 @@ class UserController extends Controller
             }
 
         }
-        $user->user_type = $request->input('user_type');
+
+
+        $user->is_admin = $request->input('is_admin');
         $user->description = $request->input('description');
         $user->slug = str::slug($request->user_name, '_') ;
 
 
          //image handel
-        if($request->hasfile('cover_pic'))
-        {
-            $filenameWithext=$request->file('cover_pic')->getClientOriginalName();
+         if($request->hasfile('cover_pic'))
+         {
+ 
+             $file = $request->file('cover_pic');
+             $extension = $file->getClientOriginalExtension();
+             $filename = time().'.'.$extension;
+             $file->move('profile_image/',$filename);
+ 
+         }
+         else{
+ 
+             $filename='noimage';
+         }
 
-            $filename=pathinfo($filenameWithext, PATHINFO_FILENAME);
-
-            $extension=$request->file('cover_pic')->getClientOriginalExtension();
-
-            $filenametostore=$filename.'_'.time().'.'.$extension;
-            
-            $path=$request->file('cover_pic')->storeAs('public/user_image', $filenametostore);
-
-        }
-
-        else{
-
-            $filenametostore='noimage';
-        }
-
-        $user->image = $filenametostore;
+        $user->image = $filename;
         $user->save();
 
-        return redirect('admin/user')->with('success','User added successfully.');
+        return redirect('/admin/user')->with('success','User added successfully.');
     }
 
     /**
@@ -132,34 +147,40 @@ class UserController extends Controller
             'user_email'=> 'required|email',
             'user_pass'=> 'nullable|min:8',
             'confirm_pass'=> 'nullable',
-            'user_type'=> 'required',
+            'is_admin'=> 'required',
             'cover_pic'=> 'image|nullable',
             'description'=> 'nullable'
         ]);
 
-        if($request->hasfile('cover_pic'))
-        {
-            $filenameWithext=$request->file('cover_pic')->getClientOriginalName();
+        //return $request;
 
-            $filename=pathinfo($filenameWithext, PATHINFO_FILENAME);
-
-            $extension=$request->file('cover_pic')->getClientOriginalExtension();
-
-            $filenametostore=$filename.'_'.time().'.'.$extension;
-            
-            $path=$request->file('cover_pic')->storeAs('public/user_image', $filenametostore);
-
-        }
-
-        else{
-
-            $filenametostore=$user->image;
+        $existemails = User::select('email')->get();
+        foreach($existemails as $existemail=>$val){
+            if($user->email==$val->email){
+                unset($existemails[$existemail]);
+            }
         }
 
         $user->name = $request->input('user_name');
-        $user->email = $request->input('user_email');
 
-        if($request->has('user_pass') && $request->user_pass != null){
+        //email verification
+        $status = false;
+        foreach($existemails as $existemail){
+            if($request->user_email == $existemail->email){
+                $status = true;
+                break;
+            }
+        }
+        if($status==true){
+            return redirect()->back()->with('error','Email already exists!!');
+        }
+        else{
+            $user->email = $request->input('user_email');
+        }
+
+
+        //password
+        if($request->has('user_pass') && $request->has('confirm_pass') && $request->user_pass != null){
             if($request->user_pass == $request->confirm_pass){
                 $user->password = bcrypt($request->input('user_pass'));
             }
@@ -168,10 +189,29 @@ class UserController extends Controller
             }
 
         }
-        $user->user_type = $request->input('user_type');
-        $user->image = $filenametostore;
+        else{
+            $user->password = $user->password;
+        }
+        
+        $user->is_admin = $request->input('is_admin');
         $user->description = $request->input('description');
         $user->slug = str::slug($request->user_name, '_') ;
+
+        //image
+        if($request->hasfile('cover_pic'))
+         {
+ 
+             $file = $request->file('cover_pic');
+             $extension = $file->getClientOriginalExtension();
+             $filename = time().'.'.$extension;
+             $file->move('profile_image/',$filename);
+ 
+         }
+         else{
+ 
+             $filename=$user->image;
+         }
+        $user->image = $filename;
         $user->save();
 
         return redirect('admin/user')->with('success','User Updated successfully.');
