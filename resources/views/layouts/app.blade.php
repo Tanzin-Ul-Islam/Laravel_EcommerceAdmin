@@ -84,9 +84,10 @@
                                     </li>
                                 </ul>
                                 @endif
+                                <a class="nav-link active" aria-current="page" style="margin-left: -20px;" href="{{route('user.show',[Auth::user()->id])}}">Welcome {{ Auth::user()->name }}</a>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+                                    settings
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

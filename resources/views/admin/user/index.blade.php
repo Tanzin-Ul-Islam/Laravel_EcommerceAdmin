@@ -61,7 +61,7 @@
                     <form action="{{route('user.destroy', [$user->id])}}" method="POST" class="mr-1">
                      @method('DELETE')
                      @csrf
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                    <button type="submit" @if(auth()->user()->id==$user->id) disabled @endif class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
                     </form>
 
                   </td>
